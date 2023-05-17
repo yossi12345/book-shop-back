@@ -1,6 +1,6 @@
 
 const User=require("../models/user.model")
-const bcrypt=require("bcrypt")
+const bcrypt=require("bcryptjs")
 // const jwt=require("jsonwebtoken")
 const handleLogout=async (req,res)=>{
     try{
@@ -16,13 +16,17 @@ const handleLogout=async (req,res)=>{
 const handleLogin=async (req,res)=>{
     try{
         const user=await User.findOne({email:req.body.email})
-        if (!user)
-            throw new Error("unable to login")
+        if (!user){
+            console.log("5555")
+            return res.status(404).send("unable to login")
+        }
         const isPasswordMatch=await bcrypt.compare(req.body.password,user.password)
-        if (!isPasswordMatch)
-            throw new Error("unable to login")
-        await user.generateToken()
-        req.send({user,token})
+        if (!isPasswordMatch){
+            console.log("6666")
+            return res.status(404).send("unable to login")
+        }
+        const token=await user.generateToken()
+        res.send(token)
     } catch (err){
         console.log(err);
         res.status(500).send(err)
@@ -32,7 +36,8 @@ const deleteUser=async (req,res)=>{
     try{
         const isPasswordMatch=await bcrypt.compare(req.body.password,req.user.password)
         if (!isPasswordMatch)
-            throw new Error("wrong password")
+            return res.status(404).send("wrong password")
+        
         req.user.remove() 
         res.send(req.user)
     } catch(err){
@@ -57,27 +62,16 @@ const updateUser=async (req,res)=>{
 const addNewUser=async (req,res)=>{
     const user=new User(req.body)
     try{
-        await user.generateToken()
-        console.log(user)
-        res.send(user)
+        await user.save()
+        const token=await user.generateToken()
+        res.send(token)
     } catch (err){
         console.log(err);
+        if (err.code===11000)
+            return res.status(404).send("this email already exists in the db")
         res.status(500).send(err)
     }
 }
-// async function generateUserToken(user,tokenSecret){
-//     const token=jwt.sign(
-//         {
-//             _id:user._id
-//         },
-//         tokenSecret,
-//         {
-//             expiresIn:"6h"
-//         }
-//     )
-//     user.tokens=user.tokens.concat({token})
-//     await user.save()
-// }
 module.exports={
     addNewUser,
     handleLogin,

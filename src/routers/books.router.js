@@ -7,7 +7,7 @@ const { searchSchema, idSchema, updateSchema, createBookSchema } = require("../s
 
 router.get("/search",validate(searchSchema),booksController.handleSearchBooks)
 
-router.get("/get",validate(idSchema),booksController.getBook)
+router.get("/get",booksController.getBook)
 
 router.delete("/delete-book",authToken(true),validate(idSchema), booksController.deleteBook)
 

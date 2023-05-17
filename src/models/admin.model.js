@@ -1,5 +1,6 @@
 const mongoose=require("mongoose")
 const generateToken = require("./generateToken")
+
 const adminSchema=new mongoose.Schema({
     username:{
         type:String,
@@ -27,7 +28,8 @@ const adminSchema=new mongoose.Schema({
     }
 })
 adminSchema.methods.generateToken=async function(){
-    await generateToken(this,process.env.ADMIN_TOKEN_SECRET)
+    const token=await generateToken(this,process.env.ADMIN_TOKEN_SECRET)
+    return token
 }
 adminSchema.pre("save",async function (next){
     if (this.isModified("password"))

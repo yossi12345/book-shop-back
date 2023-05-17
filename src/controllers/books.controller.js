@@ -1,16 +1,23 @@
 
-const Book=require("../models/admin.model")
+const Book=require("../models/book.model")
 const handleSearchBooks=async (req,res)=>{
     const sortby={}
     sortby[req.query.sort]=req.query.asending==="true"?1:-1
+    const search=req.query.search
     try{
         const books=await Book.find({
             $or:[
-                {name:req.query.search},
-                {author:req.query.search}
-            ]
+                    {
+                        name:search,
+                        genre:req.query.genre
+                    },
+                    {
+                        author:search,
+                        genre:req.query.genre
+                    }
+                ]
         }).collation({locale:"he",caseLevel: false, numericOrdering: false})
-        .sort(sortby).limit(12).skip(req.query.skip)
+        .sort(sortby).limit(5).skip(req.query.skip)
 
         handleBooksFind(res,books,"there is no books that matches to your search")
     } catch(err){
@@ -56,12 +63,14 @@ const handleAddingNewBook=async (req,res)=>{
         res.send(book)
     } catch (err){
         console.log(err);
-        res.status(500).send(err)
+        res.status(500).send(err,"oooooooo")
     }
 }
 async function handleBooksFind(res,book,unfindMessage="there is no book with this id"){
-    if (!book)
-        return res.status(404).send(unfindMessage)
+    if (!book){
+        console.log("oops");
+        return res.status(200).send(unfindMessage)
+    }
     console.log(book)  
     res.send(book)
 }

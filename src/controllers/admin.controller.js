@@ -7,12 +7,12 @@ const handleLogin=async (req,res)=>{
             username:req.body.username
         })
         if (!admin)
-            throw new Error("admin unable to login")
+            return res.status(404).send("admin unable to login")
         const isPasswordMatch=await bcrypt.compare(req.body.password,admin.password)
         if (!isPasswordMatch)
-            throw new Error("admin unable to login")
-        await admin.generateToken()
-        res.send({admin,token})
+            return res.status(404).send("admin unable to login")
+        const token=await admin.generateToken()
+        res.send(token)
     } catch(err){
         console.log(err);
         res.status(500).send(err)

@@ -1,33 +1,33 @@
-const {object,string,number,mixed}=require("yup")
-const loginFaildMessage="unable to login"
+const {object,string,number,mixed,array}=require("yup")
+const loginFailedMessage="unable to login"
 const loginSchema=object({
-    body:object({
-        email:string().required("email is required").email(loginFaildMessage),
-        password:string().required("password is required").min(8,loginFaildMessage).max(20,loginFaildMessage)
+    body:object().shape({
+        email:string().required("email is required").email(loginFailedMessage),
+        password:string().required("password is required").min(8,loginFailedMessage).max(20,loginFailedMessage)
     })
 })
 const deleteSchema=object({
     body:object({
-        password:string().required("password is required").min(8,loginFaildMessage).max(20,loginFaildMessage)
+        password:string().required("password is required").min(8,loginFailedMessage).max(20,loginFailedMessage)
     })
 })
 const updateSchema=object({
-    body:object({
-        password:string().required("password is required").min(8,loginFaildMessage).max(20,loginFaildMessage),
+    body:object().shape({
+        password:string().required("password is required").min(8,loginFailedMessage).max(20,loginFailedMessage),
         update:array().of(
             mixed().oneOf(['password', 'age', 'username', 'email'], 'Invalid update')
-            .when([0], {
+            .when('$0', {
                     is: 'password',
-                    then: yup.string().required('new Password is required').min(8).max(20),
-                }).when([0], {
+                    then: string().required('new Password is required').min(8).max(20),
+                }).when('$0', {
                     is: 'age',
-                    then: yup.number().min(4).max(120).required('new age is required'),
-                }).when([0], {
+                    then: number().min(4).max(120).required('new age is required'),
+                }).when('$0', {
                     is: 'username',
-                    then: yup.string().required('new username is required'),
-                }).when([0], {
+                    then: string().required('new username is required'),
+                }).when('$0', {
                     is: 'email',
-                    then: yup.string().email('Invalid email address').required('new email is required'),
+                    then: string().email('Invalid email address').required('new email is required'),
                 }
             )
         ).

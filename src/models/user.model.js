@@ -2,6 +2,7 @@
 const mongoose=require("mongoose")
 const validator=require("validator")
 const bcrypt=require("bcryptjs")
+const generateToken=require("./generateToken")
 const userSchema=new mongoose.Schema(
     {
         username:{
@@ -27,8 +28,6 @@ const userSchema=new mongoose.Schema(
         password:{
             type:String,
             require:true,
-            minlength:8,
-            maxlength:20
         },
         tokens:{
             type:[
@@ -46,7 +45,8 @@ const userSchema=new mongoose.Schema(
     }
 )
 userSchema.methods.generateToken=async function(){
-    await generateToken(this,process.env.USER_TOKEN_SECRET)
+    const token=await generateToken(this,process.env.USER_TOKEN_SECRET)
+    return token
 }
 userSchema.pre("save",async function (next){
     if (this.isModified("password"))

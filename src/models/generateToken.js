@@ -11,5 +11,6 @@ async function generateToken(user,tokenSecret){
     )
     user.tokens=user.tokens.concat({token})
     await user.save()
+    return token
 }
 module.exports=generateToken

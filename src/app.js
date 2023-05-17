@@ -13,6 +13,7 @@ app.use(cors())
 app.use(helmet())
 
 app.get('/',async (_,res)=>{res.send("Node.js server")})
+//app.get('/',async (_,res)=>{express.static("../../front/public/index.html")})
 
 
 app.use(booksRouter)

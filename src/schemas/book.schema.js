@@ -1,4 +1,5 @@
 const {object,string, number}=require("yup")
+const Book = require("../models/book.model")
 const idSchema=object({
     query:object({
         _id:string().length(24,"wrong id")
@@ -6,7 +7,11 @@ const idSchema=object({
 })
 const searchSchema=object({
     query:object({
-        search:string().required()
+        search:string(),
+        sort:string().oneOf(["name","author","genre"]),
+        skip:number().min(0),
+        asending:string().oneOf([["true","false"]]),
+        genre:string().oneOf(Book.getAllGenres())
     })
 })
 const createBookSchema=object({
@@ -18,22 +23,7 @@ const createBookSchema=object({
         discount:number().min(0).max(100),
         bookCover:string().required(),
         description:string().required(),
-        genre:string().required().oneOf([
-             "פרוזה מקור","פרוזה תרגום",
-             "מתח ופעולה","רומן רומנטי",
-             "רומן אירוטי","עיון",
-             'מד"ב ופנטזיה',"ילדים ונוער",
-             "פעוטות","ילדי גן",
-             "ראשית קריאה","נוער צעיר",
-             "נוער בוגר","שואה",
-             "יהדות","מדריכים ועצות",
-             "עסקים וניהול","היסטוריה ופוליטיקה",
-             "ביוגרפיה","בריאות",
-             "פסיכולוגיה","הורות וזוגיות",
-             "הגות ופילוסופיה","רוחניות",
-             "טיולים ופנאי","בישול",
-             "שירה","מדע ורפואה"
-        ])
+        genre:string().required().oneOf(Book.getAllGenres())
     })
 })
 const updateSchema=object({
@@ -45,22 +35,7 @@ const updateSchema=object({
        name:string(),
        discount:number().min(0).max(100),
        bookCover:string(),
-       genre:string().oneOf([
-            "פרוזה מקור","פרוזה תרגום",
-            "מתח ופעולה","רומן רומנטי",
-            "רומן אירוטי","עיון",
-            'מד"ב ופנטזיה',"ילדים ונוער",
-            "פעוטות","ילדי גן",
-            "ראשית קריאה","נוער צעיר",
-            "נוער בוגר","שואה",
-            "יהדות","מדריכים ועצות",
-            "עסקים וניהול","היסטוריה ופוליטיקה",
-            "ביוגרפיה","בריאות",
-            "פסיכולוגיה","הורות וזוגיות",
-            "הגות ופילוסופיה","רוחניות",
-            "טיולים ופנאי","בישול",
-            "שירה","מדע ורפואה"
-        ])
+       genre:string().oneOf(Book.getAllGenres())
     }),
 })
 module.exports={
