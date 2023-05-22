@@ -2,7 +2,7 @@ const {object,string, number}=require("yup")
 const Book = require("../models/book.model")
 const idSchema=object({
     query:object({
-        _id:string().length(24,"wrong id")
+        _id:string().length(24,"wrong id").required()
     })
 })
 const searchSchema=object({

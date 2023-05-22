@@ -7,17 +7,17 @@ const allGenres=[
 const bookSchema=new mongoose.Schema({
     name:{
         type:String,
-        require:true,
+        required:true,
         trim:true
     },
     author:{
         type:String,
-        require:true,
+        required:true,
         trim:true,
     },
     price:{
         type:Number,
-        require:true,
+        required:true,
         min:0
     },
     discount:{
@@ -30,15 +30,15 @@ const bookSchema=new mongoose.Schema({
     },
     description:{
         type:String,
-        require:true
+        required:true
     },
     bookCover:{
         type:String,
-        require:true
+        required:true
     },
     genre:{
         type:String,
-        require:true,
+        required:true,
         trim:true,
         validate(value){
             if (!allGenres.includes(value.trim()))

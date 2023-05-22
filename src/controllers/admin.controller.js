@@ -1,6 +1,7 @@
 
 const Admin=require("../models/admin.model")
 const User=require("../models/user.model")
+const bcrypt=require("bcryptjs")
 const handleLogin=async (req,res)=>{
     try{
         const admin=await Admin.findOne({
@@ -18,6 +19,19 @@ const handleLogin=async (req,res)=>{
         res.status(500).send(err)
     }
 }
+// const addNewAdmin=async (req,res)=>{
+//     const admin=new Admin(req.body)
+//     try{
+//         await admin.save()
+//         res.send(admin)
+        
+//     } catch (err){
+//         console.log(err);
+//         if (err.code===11000)
+//             return res.status(404).send("this username already exists in the db")
+//         res.status(500).send(err)
+//     }
+// }
 const deleteUser=async (req,res)=>{
     try{
         const isPasswordMatch=await bcrypt.compare(req.body.password,req.admin.password)
@@ -45,27 +59,9 @@ const handleLogout=async (req,res)=>{
         res.status(500).send(err)
     }
 }
-// const setDiscount=async (req,res)=>{
-//     try{
-//         const book=await Book.findByIdAndUpdate(req.body._id,
-//             {
-//                 discount:req.body.discount===0?undefined:req.body.discount
-//             },
-//             {
-//                 new:true,
-//                 runValidators:true
-//             }
-//         )
-//         if (!book)
-//             throw new Error("the book isn't found")
-//         res.send(book)
-//     } catch(err){
-//         console.log(err)
-//         res.status(500).send(err)
-//     }
-// }
 module.exports={
     handleLogin,
     handleLogout,
-    deleteUser
+    deleteUser,
+    //addNewAdmin
 }

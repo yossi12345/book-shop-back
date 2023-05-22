@@ -1,15 +1,15 @@
 const mongoose=require("mongoose")
 const generateToken = require("./generateToken")
-
+const bcrypt=require("bcryptjs")
 const adminSchema=new mongoose.Schema({
     username:{
         type:String,
-        require:true,
+        required:true,
         unique:true
     },
-    passwoed:{
+    password:{
         type:String,
-        require:true,
+        required:true,
         validate(value){
             const regex=/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*]).{8,}$/
             if (!regex.test(value))
@@ -21,19 +21,20 @@ const adminSchema=new mongoose.Schema({
             {
                 token:{
                     type:String,
-                    require:true
+                    required:true
                 }
             }
         ]
     }
 })
 adminSchema.methods.generateToken=async function(){
-    const token=await generateToken(this,process.env.ADMIN_TOKEN_SECRET)
+    const token=await generateToken(this,true)
     return token
 }
 adminSchema.pre("save",async function (next){
-    if (this.isModified("password"))
-        this.password=await bcrypt.hash(this.password,8)
+    if (this.isModified("password")){
+        this.password=await bcrypt.hash(this.password,12)
+    }
     next()
 })
 module.exports=mongoose.model("Admin",adminSchema)

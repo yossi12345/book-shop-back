@@ -7,18 +7,18 @@ const userSchema=new mongoose.Schema(
     {
         username:{
             type:String,
-            require:true,
+            required:true,
             trim:true
         },
         age:{
             type:Number,
-            require:true,
+            required:true,
             min:4,
             max:120
         },
         email:{
             type:String,
-            require:true,
+            required:true,
             unique:true,
             validate(value){
                 if (!validator.isEmail(value))
@@ -27,14 +27,14 @@ const userSchema=new mongoose.Schema(
         },
         password:{
             type:String,
-            require:true,
+            required:true,
         },
         tokens:{
             type:[
                 {
                     token:{
                         type:String,
-                        require:true
+                        required:true
                     }
                 }
             ]
@@ -45,7 +45,7 @@ const userSchema=new mongoose.Schema(
     }
 )
 userSchema.methods.generateToken=async function(){
-    const token=await generateToken(this,process.env.USER_TOKEN_SECRET)
+    const token=await generateToken(this,false)
     return token
 }
 userSchema.pre("save",async function (next){
