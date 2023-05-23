@@ -45,6 +45,10 @@ const bookSchema=new mongoose.Schema({
                 throw new Error("this isn't a genre")
         },
     },
+    available:{
+        type:Boolean,
+        default:true
+    }
 })
 bookSchema.statics.getAllGenres=()=>{
     return allGenres

@@ -1,10 +1,14 @@
 
 const Book=require("../models/book.model")
-const handleSearchBooks=async (req,res)=>{
+const handleSearchBooks=(isAdmin)=>async (req,res)=>{
     const sortby={}
     sortby[req.query.sort]=req.query.asending==="true"?1:-1
     const findByName={}
     const findByAuthor={}
+    if (!isAdmin){
+        findByName.available=true
+        findByAuthor.available=true
+    }
     const search=req.query.search
     const genre=req.query.genre
     if (search){
@@ -71,6 +75,10 @@ async function handleBooksFind(res,book,unfindMessage="there is no book with thi
     if (!book){
         console.log("oops")
         return res.status(404).send(unfindMessage)
+    }
+    if (!book.available){
+        console.log("oopsii",book)
+        return res.status(404).send({book,message:"the book is unavailable"})
     }
     console.log(book)  
     res.send(book)

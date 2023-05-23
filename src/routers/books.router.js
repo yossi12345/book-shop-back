@@ -5,7 +5,7 @@ const authToken = require("../middlewares/authToken.middleware")
 const validate = require("../middlewares/validate.middleware")
 const { searchSchema, idSchema, updateSchema, createBookSchema } = require("../schemas/book.schema")
 
-router.get("/search",validate(searchSchema),booksController.handleSearchBooks)
+router.get("/search",validate(searchSchema),booksController.handleSearchBooks(false))
 
 router.get("/get",validate(idSchema),booksController.getBook)
 
@@ -15,4 +15,5 @@ router.patch("/update-book",authToken(true),validate(updateSchema), booksControl
 
 router.post("/new-book",authToken(true),validate(createBookSchema),booksController.handleAddingNewBook)
 
+router.get("/admin-search",authToken(true),validate(searchSchema),booksController.handleSearchBooks(true))
 module.exports=router;
