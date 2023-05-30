@@ -13,7 +13,10 @@ const handleLogin=async (req,res)=>{
         if (!isPasswordMatch)
             return res.status(404).send("admin unable to login")
         const token=await admin.generateToken()
-        res.send(token)
+        res.send({
+            token,
+            username:admin.username
+        })
     } catch(err){
         console.log(err);
         res.status(500).send(err)

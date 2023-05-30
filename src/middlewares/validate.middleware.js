@@ -8,7 +8,7 @@ const validate=(schema)=>async (req,res,next)=>{
         })
         next()
     } catch(err){
-        console.log("gggggg");
+        console.log("schema validate failed");
         res.status(404).send(err)
     }
 }

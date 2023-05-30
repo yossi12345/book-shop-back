@@ -26,7 +26,10 @@ const handleLogin=async (req,res)=>{
             return res.status(404).send("unable to login")
         }
         const token=await user.generateToken()
-        res.send(token)
+        res.send({
+            token,
+            username:user.username
+        })
     } catch (err){
         console.log(err);
         res.status(500).send(err)
@@ -64,7 +67,10 @@ const addNewUser=async (req,res)=>{
     try{
         await user.save()
         const token=await user.generateToken()
-        res.send(token)
+        res.send({
+            token,
+            username:user.username
+        })
     } catch (err){
         console.log(err);
         if (err.code===11000)

@@ -9,8 +9,8 @@ const searchSchema=object({
     query:object({
         search:string(),
         sort:string().oneOf(["name","author","genre"]),
-        skip:number().min(0),
-        asending:string().oneOf([["true","false"]]),
+        page:number().min(1),
+        asending:string().oneOf(["true","false"]),
         genre:string().oneOf(Book.getAllGenres())
     })
 })
