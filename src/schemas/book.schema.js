@@ -21,7 +21,6 @@ const createBookSchema=object({
         author:string().required(),
         firstChapter:string(),
         discount:number().min(0).max(100),
-        bookCover:string().required(),
         description:string().required(),
         genre:string().required().oneOf(Book.getAllGenres())
     })
@@ -34,7 +33,6 @@ const updateSchema=object({
        price:number().min(0),
        name:string(),
        discount:number().min(0).max(100),
-       bookCover:string(),
        genre:string().oneOf(Book.getAllGenres())
     }),
 })

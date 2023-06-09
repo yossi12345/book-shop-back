@@ -35,13 +35,13 @@ const handleLogin=async (req,res)=>{
         res.status(500).send(err)
     }
 }
-const deleteUser=async (req,res)=>{
+const deleteAccount=async (req,res)=>{
     try{
         const isPasswordMatch=await bcrypt.compare(req.body.password,req.user.password)
         if (!isPasswordMatch)
             return res.status(404).send("wrong password")
         
-        req.user.remove() 
+        req.user.deleteOne() 
         res.send(req.user)
     } catch(err){
         console.log(err);
@@ -52,13 +52,22 @@ const updateUser=async (req,res)=>{
     try{
         const isPasswordMatch=await bcrypt.compare(req.body.password,req.user.password)
         if (!isPasswordMatch)
-            throw new Error("wrong password")
-        const [key,update]=req.body.update
-        req.user[key]=update
+            return res.status(404).send("wrong password")
+        const updates=req.body.updates
+        if (updates.email){
+            const userWithSameEmail=await User.findOne({email:updates.email})
+            if (userWithSameEmail)
+                return res.status(401).send("this email already exists in the db")
+        }
+        for (const key in updates){
+            req.user[key]=updates[key]
+        }
         await req.user.save()
         res.send(req.user)
     } catch(err){
         console.log(err)
+        // if (key==="email"&&err.code===11000)
+        //     return res.status(401).send("this email already exists in the db")
         res.status(500).send(err)
     }
 }
@@ -74,7 +83,7 @@ const addNewUser=async (req,res)=>{
     } catch (err){
         console.log(err);
         if (err.code===11000)
-            return res.status(404).send("this email already exists in the db")
+            return res.status(401).send("this email already exists in the db")
         res.status(500).send(err)
     }
 }
@@ -82,6 +91,6 @@ module.exports={
     addNewUser,
     handleLogin,
     handleLogout,
-    deleteUser,
+    deleteAccount,
     updateUser
 }

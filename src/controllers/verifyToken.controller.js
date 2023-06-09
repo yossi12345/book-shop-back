@@ -7,25 +7,16 @@ const verifyToken=(isAdmin=false)=>async(req,res)=>{
     try{
         console.log("1")
         const token=req.header("Authorization").replace("Bearer ","")
+        console.log("::",token)
         const data=jwt.verify(token,tokenSecret)
         const user=await (isAdmin?Admin:User).findOne({
             _id:data._id,
             "tokens.token":token
         })
-        // if (isAdmin){
-        //     user=await Admin.findOne({
-        //         _id:data._id,
-        //         "tokens.token":token
-        //     })
-        // }
-        // else{
-        //     user=await User.findOne({
-        //         _id:data._id,
-        //         "tokens.token":token
-        //     })
-        // }
-        if (!user)
+        if (!user){
+            console.log("ll",user,token)
             return res.status(404).send(false)
+        }
         res.send({isValidToken:true,username:user.username, userId:user._id})
     }catch(err){
         console.log("#")

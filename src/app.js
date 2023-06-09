@@ -9,9 +9,13 @@ const verifyTokenRouter=require("./routers/verifyToken.router")
 const app=express()
 
 app.use(express.json())
-
+app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 app.use(helmet())
+ 
+
+app.use(express.json());
+
 
 app.get('/',async (_,res)=>{res.send("Node.js server")})
 
@@ -26,7 +30,7 @@ app.all("*",async (_,res)=>{
         success:false,
         statusCode:404,
         statusText:"Not Found",
-        message:"nothing to see here"
+        message:"nothing to see here",
     })
 })
 module.exports=app

@@ -1,5 +1,5 @@
 const validate=(schema)=>async (req,res,next)=>{
-    
+    console.log(req.body)
     try{
         await schema.validate({
             body:req.body,

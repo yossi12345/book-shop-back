@@ -12,28 +12,64 @@ const deleteSchema=object({
     })
 })
 const updateSchema=object({
-    body:object().shape({
-        password:string().required("password is required").min(8,loginFailedMessage).max(20,loginFailedMessage),
-        update:array().of(
-            mixed().oneOf(['password', 'age', 'username', 'email'], 'Invalid update')
-            .when('$0', {
-                    is: 'password',
-                    then: string().required('new Password is required').min(8).max(20),
-                }).when('$0', {
-                    is: 'age',
-                    then: number().min(4).max(120).required('new age is required'),
-                }).when('$0', {
-                    is: 'username',
-                    then: string().required('new username is required'),
-                }).when('$0', {
-                    is: 'email',
-                    then: string().email('Invalid email address').required('new email is required'),
-                }
-            )
-        ).
-        required("an update required")
+    body:object({
+        password:string().min(8,"wrong password").max(20,"wrong password"),
+        updates:object({
+            email:string().email("invalid email update"),
+            username:string(),
+            password:string().min(8,"invalid password update").max(20,"invalid password update")
+        })
     })
 })
+// const updateSchema=(req,res,next)=>{
+//     const update=req.body.update
+//     const password=req.body.password
+//     if (password.length<8||password.length>20)
+//         return res.status(404).send("wrong password")
+//     if (!Array.isArray(req.body.update))
+//         return res.status(404).send("it need to be array with the update key and value")
+//     const updatedVal=update[1]
+//     switch(update[0]){ 
+//         case 'password':
+//             if (updatedVal.length<8||updatedVal.length>20)
+//                 return res.status(404).send("invalid password update")
+//             break
+//         case 'username':
+//             if (updatedVal==="")
+//                 return res.status(404).send("invalid username update");
+//             break
+//         case 'email':
+//             if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(updatedVal)))
+//                 return res.status(404).send("invalid email update");
+//             break
+//         default:
+//             return res.status(404).send("invalid update");
+//     }
+//     next()
+// }
+// const updateSchema=object({
+//     body:object().shape({
+//         password:string().required("password is required").min(8,loginFailedMessage).max(20,loginFailedMessage),
+//         update:array().of(
+//             mixed().test('updateValidation', 'Invalid update field', function (value) {
+//                 const updateType = value[0];
+//                 const updateValue = value[1];
+      
+//                 switch (updateType) {
+//                   case 'password':
+//                     return this.schema.fields.password.required('New password is required').min(8).max(20).isValidSync(updateValue);
+//                   case 'username':
+//                     return this.schema.fields.username.required('New username is required').isValidSync(updateValue);
+//                   case 'email':
+//                     return this.schema.fields.email.email('Invalid email address').required('New email is required').isValidSync(updateValue);
+//                   default:
+//                     return false;
+//                 }
+//             })
+//         ).
+//         required("an update required")
+//     })
+// })
 const newUserSchema=object({
     body:object({
         username:string().required("username is required"),
@@ -52,4 +88,6 @@ module.exports={
 }
 
 
+
+  
 

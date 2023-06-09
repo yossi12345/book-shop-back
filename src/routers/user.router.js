@@ -11,7 +11,7 @@ router.post("/login",validate(loginSchema),userController.handleLogin)
 
 router.post("/sign-up",validate(newUserSchema),userController.addNewUser)
 
-router.delete("/delete-account",authToken(),validate(deleteSchema),userController.deleteUser)
+router.delete("/delete-account",authToken(),validate(deleteSchema),userController.deleteAccount)
 
 router.patch("/update-account",authToken(),validate(updateSchema), userController.updateUser)
 

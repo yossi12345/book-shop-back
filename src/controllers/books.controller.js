@@ -1,40 +1,35 @@
 
 const Book=require("../models/book.model")
+const fs=require("fs")
 const handleSearchBooks=(isAdmin)=>async (req,res)=>{
     const sortby={}
     sortby[req.query.sort]=req.query.asending==="true"?1:-1
     const findByName={}
-    //const findByAuthor={}
     const search=req.query.search
     const genre=req.query.genre
     if (!isAdmin){
         findByName.available=true
-        //findByAuthor.available=true
     }
     if (search){
         findByName.name={$regex:new RegExp(search,"i")}
-        //findByAuthor.author={$regex:new RegExp(search,"i")}
     }
     if (genre){
         findByName.genre=genre
-        //findByAuthor.genre=genre
     }
     const skip=(req.query.page-1)*6
     try{
-        const books=await Book.find({findByName
-        }).collation({locale:"en",strength:2})
-        .sort(sortby).limit(7).skip(skip)
+        const books=await Book.find(findByName)
+        .collation({locale:"en",strength:2})
+        .sort(sortby).limit(6).skip(skip)
         if (books.length===0){
             console.log("oops")
             return res.status(404).send("there is no books that matches to your search")
         }
-        console.log(books)
-        const isThereMoreBooks=books.length===7
-        if (isThereMoreBooks)
-            books.pop()
+        const amountOfBooks=await Book.countDocuments(findByName)
+        console.log(books,amountOfBooks)
         res.send({
             books,
-            isThereMoreBooks
+            amountOfBooks
         })
     } catch(err){
         console.log(err);
@@ -53,9 +48,34 @@ const handleUpdateBook=async (req,res)=>{
         res.status(500).send(err)
     }
 }
+const handleUploadBookCover=async (req,res)=>{
+    try{
+        const book=await Book.findById(req.query._id)
+        book.bookCover="/book-images/"+req.file.filename
+        await book.save()
+        res.send(book)
+    }catch (err){
+        console.log(err)
+        res.status(404).send("לא הצלחנו לשמור את התמונה")
+    }
+}
+const handleEditBookCover=async (req,res)=>{
+    try{
+        const book=await Book.findById(req.query._id)
+        fs.unlink("../front/public"+book.bookCover,()=>{})
+        book.bookCover="/book-images/"+req.file.filename
+        await book.save()
+        res.send(book)
+    }catch (err){
+        console.log(err)
+        res.status(404).send("לא הצלחנו לערוך את התמונה")
+    }
+}
 const deleteBook=async (req,res)=>{
     try{
         const book=await Book.findByIdAndDelete(req.query._id)
+        if (book)
+            fs.unlink("../front/public"+book.bookCover,()=>{})
         handleBookFind(res,book)
     } catch(err){
         console.log(err);
@@ -72,10 +92,11 @@ const getBook=async (req,res)=>{
     }
 }
 const handleAddingNewBook=async (req,res)=>{
+    req.body.bookCover="/book-images/no-book-cover.PNG"
     const book=new Book(req.body)
     try{
         await book.save()
-        console.log("qwertyu",book)
+        console.log("body",book)
         res.send(book)
     } catch (err){
         console.log("cdfvgbhnjm",err)
@@ -95,5 +116,7 @@ module.exports={
     handleSearchBooks,
     handleUpdateBook,
     deleteBook,
-    getBook
+    getBook,
+    handleEditBookCover,
+    handleUploadBookCover
 }
