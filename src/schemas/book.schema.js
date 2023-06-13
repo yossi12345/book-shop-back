@@ -1,5 +1,5 @@
 const {object,string, number}=require("yup")
-const Book = require("../models/book.model")
+const { GENRES }=require("../global-contants")
 const idSchema=object({
     query:object({
         _id:string().length(24,"wrong id").required()
@@ -11,7 +11,7 @@ const searchSchema=object({
         sort:string().oneOf(["name","author","genre"]),
         page:number().min(1),
         asending:string().oneOf(["true","false"]),
-        genre:string().oneOf(Book.getAllGenres())
+        genre:string().oneOf(GENRES)
     })
 })
 const createBookSchema=object({
@@ -22,7 +22,7 @@ const createBookSchema=object({
         firstChapter:string(),
         discount:number().min(0).max(100),
         description:string().required(),
-        genre:string().required().oneOf(Book.getAllGenres())
+        genre:string().required().oneOf(GENRES)
     })
 })
 const updateSchema=object({
@@ -33,7 +33,7 @@ const updateSchema=object({
        price:number().min(0),
        name:string(),
        discount:number().min(0).max(100),
-       genre:string().oneOf(Book.getAllGenres())
+       genre:string().oneOf(GENRES)
     }),
 })
 module.exports={

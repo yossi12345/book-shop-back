@@ -8,7 +8,8 @@ const userSchema=new mongoose.Schema(
         username:{
             type:String,
             required:true,
-            trim:true
+            trim:true,
+            maxlength:12
         },
         age:{
             type:Number,

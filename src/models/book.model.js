@@ -1,9 +1,5 @@
 const mongoose=require("mongoose")
-const allGenres=[ 
-    "פרוזה מקור","מתח ופעולה","רומן רומנטי",
-    "רומן אירוטי","מדריכים ועצות",
-    "היסטוריה ופוליטיקה","עיון"
-]
+const {GENRES}=require("../global-contants")
 const bookSchema=new mongoose.Schema({
     name:{
         type:String,
@@ -41,7 +37,7 @@ const bookSchema=new mongoose.Schema({
         required:true,
         trim:true,
         validate(value){
-            if (!allGenres.includes(value.trim()))
+            if (!GENRES.includes(value.trim()))
                 throw new Error("this isn't a genre")
         },
     },
@@ -50,7 +46,4 @@ const bookSchema=new mongoose.Schema({
         default:true
     }
 })
-bookSchema.statics.getAllGenres=()=>{
-    return allGenres
-}
 module.exports=mongoose.model("Book",bookSchema)

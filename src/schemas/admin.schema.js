@@ -1,9 +1,10 @@
 const {object,string}=require("yup")
+const {ADMIN_PASSWORD_REGEX}=require("../global-contants")
 const loginSchema=object({
     body:object({
         username:string().required("username is required"),
         password:string().required("unable to login").matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/,
+            ADMIN_PASSWORD_REGEX,
             "unable to login"
         )
     })
@@ -11,7 +12,7 @@ const loginSchema=object({
 const deleteUserSchema=object({
     body:object({
         password:string().required().matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/,
+            ADMIN_PASSWORD_REGEX,
             "wrong password"
         ),
         email:string().required("user email is required").email("this isn't a valid mail")
@@ -20,7 +21,7 @@ const deleteUserSchema=object({
 const deleteAccountSchema=object({
     body:object({
         password:string().required("password is required").matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/,
+            ADMIN_PASSWORD_REGEX,
             "wrong password"
         ),
     })
@@ -28,13 +29,13 @@ const deleteAccountSchema=object({
 const updateSchema=object({
     body:object({
         password:string().required("password is required").matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/,
+            ADMIN_PASSWORD_REGEX,
             "wrong password"
         ),
         updates:object({
             username:string(),
             password:string().matches(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/,
+                ADMIN_PASSWORD_REGEX,
                 "invalid password update"
             )
         })

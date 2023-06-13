@@ -9,7 +9,7 @@ const { searchSchema, idSchema, updateSchema, createBookSchema } = require("../s
 const storage = multer.diskStorage({
     destination:"../front/public/book-images",
     filename: (_, file, callback) => {
-      const filename =Date.now()+"-"+encodeURIComponent(file.originalname)
+      const filename =Date.now()+"-"+file.originalname
       callback(null, filename);
     },
 });
