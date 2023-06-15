@@ -13,6 +13,7 @@ async function gracefulShutdown(signal,server){
 const server=app.listen(port,async ()=>{
     await connectToMongoDB()
     console.log("Server connected, port:",port)
+    
     signals.forEach((signal)=>{
         gracefulShutdown(signal,server)
     })

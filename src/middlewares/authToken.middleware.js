@@ -1,5 +1,4 @@
 const Admin=require("../models/admin.model")
-const User=require("../models/user.model")
 const jwt=require("jsonwebtoken")
 const authToken=(isAdmin=false)=>async(req,res,next)=>{
 
@@ -15,15 +14,6 @@ const authToken=(isAdmin=false)=>async(req,res,next)=>{
             if (!admin)
                 throw new Error("autorization failed")
             req.admin=admin
-        }
-        else{
-            const user=await User.findOne({
-                _id:data._id,
-                "tokens.token":token
-            })
-            if (!user)
-                throw new Error("autorization failed")
-            req.user=user
         }
         next()
     }catch(err){
